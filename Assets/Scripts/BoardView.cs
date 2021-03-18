@@ -6,52 +6,21 @@ using System;
 
 public class BoardView : MonoBehaviour
 {
-    [SerializeField] private GameObject _whiteFigure;
-    [SerializeField] private GameObject _blackFigure;
-    [SerializeField] private GameObject _whiteSquare;
-    [SerializeField] private GameObject _blackSquare;
+
     [SerializeField] private GameObject _highlightSquare;
+    [SerializeField] private GameObject _whiteSquare;
+    [SerializeField] private GameObject _backgorund;
 
     private GameObject[,] _figures = new GameObject[8, 8];
 
-    [HideInInspector] public int PosX;
-    [HideInInspector] public int PosY;
+    public event Action<Vector2Int> Clicked;
 
-    public event Action MouseButtonDown;
-
- 
-
-
-
-
-    public void GenerateBoard(FigureModel[,] array)
+    public void Initialize(int size)
     {
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < size; i++)
         {
-            for (int j = 0; j < 8; j++)
+            for (int j = 0; j < size; j++)
             {
-                if (array[i, j] != null)
-                {
-                    if (array[i, j].Color == Color.white)
-                    {
-                        _figures[i, j] = Instantiate(_whiteFigure, new Vector3(j, i, 0f), Quaternion.identity);
-                    }
-                    else if (array[i, j].Color == Color.black)
-                    {
-                        _figures[i, j] = Instantiate(_blackFigure, new Vector3(j, i, 0f), Quaternion.identity);
-                    }
-                }
-            }
-        }
-    }
-    public void DrawTiles(FigureModel[,] array)
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            for (int j = 0; j < 8; j++)
-            {
-
-
                 if (i % 2 == 0)
                 {
                     if (j % 2 != 0)
@@ -66,35 +35,25 @@ public class BoardView : MonoBehaviour
                         Instantiate(_whiteSquare, new Vector3(i, j, 0f), Quaternion.identity);
                     }
                 }
-
-
             }
         }
 
-        Instantiate(_blackSquare, new Vector3(3.5f, 3.5f, 0f), Quaternion.identity);
-
+        Instantiate(_backgorund, new Vector3(3.5f, 3.5f, 0f), Quaternion.identity);
     }
     void Update()
     {
 
         if (Input.GetMouseButtonDown(0))
         {
-            Vector3 CursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var roundedPosition = new Vector2Int((int)cursorPosition.x, (int) cursorPosition.y);
 
-            PosX = (int)Mathf.Round(CursorPosition.x);
-            PosY = (int)Mathf.Round(CursorPosition.y);
-
-
-            if (PosX >= 0 && PosX < 8 && PosY >= 0 && PosY < 8)
+            if (roundedPosition.x >= 0 && roundedPosition.x < 8 &&
+                roundedPosition.y >= 0 && roundedPosition.y < 8)
             {
-                MouseButtonDown?.Invoke();
+                Clicked?.Invoke(roundedPosition);
             }
-
         }
-
-       
-
-
     }
     public void HighlightTile(int posX, int posY)
     {
