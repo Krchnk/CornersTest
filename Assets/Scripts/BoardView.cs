@@ -6,12 +6,11 @@ using System;
 
 public class BoardView : MonoBehaviour
 {
-
     [SerializeField] private GameObject _highlightSquare;
     [SerializeField] private GameObject _whiteSquare;
     [SerializeField] private GameObject _backgorund;
 
-    private GameObject[,] _figures = new GameObject[8, 8];
+    private GameObject _selection;
 
     public event Action<Vector2Int> Clicked;
 
@@ -39,10 +38,24 @@ public class BoardView : MonoBehaviour
         }
 
         Instantiate(_backgorund, new Vector3(3.5f, 3.5f, 0f), Quaternion.identity);
+
+        _selection = Instantiate(_highlightSquare);
+        _selection.SetActive(false);
     }
+
+    public void HighlightCell(Vector2Int position)
+    {
+        _selection.SetActive(true);
+        _selection.transform.position = new Vector3(position.x, position.y, 0f);
+    }
+
+    public void HideCellSelection()
+    {
+        _selection.SetActive(false);
+    }
+
     void Update()
     {
-
         if (Input.GetMouseButtonDown(0))
         {
             var cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -55,50 +68,4 @@ public class BoardView : MonoBehaviour
             }
         }
     }
-    public void HighlightTile(int posX, int posY)
-    {
-        Instantiate(_highlightSquare, new Vector3(posX, posY, 0f), Quaternion.identity);
-    }
-    public void MoveFigure(int targetPosX, int targetPosY, int currentPosX, int currentPosY)
-    {
-        var selectedFigure = _figures[currentPosY, currentPosX];
-
-        // selectedFigure.transform.position = new Vector3(targetPosX, targetPosY, 0f);
-
-
-        StartCoroutine(MoveTo(selectedFigure, selectedFigure.transform.position, new Vector3(targetPosX, targetPosY, 0f)));
-
-        StartCoroutine(ScaleTo(selectedFigure, selectedFigure.transform.localScale, new Vector3(0.1f, 0.1f, 0.1f)));
-        
-
-
-        _figures[targetPosY, targetPosX] = _figures[currentPosY, currentPosX];
-    }
-
-    private IEnumerator MoveTo(GameObject gameObject, Vector3 from, Vector3 to)
-    {
-        float t = 0f;
-        while (t < 1f)
-        {
-            t += Time.deltaTime;
-            gameObject.transform.position = Vector3.Lerp(from, to, Mathf.SmoothStep(0f, 1f, t));
-            yield return null;
-        }
-    }
-    private IEnumerator ScaleTo(GameObject gameObject, Vector3 from, Vector3 to)
-    {
-        float r = 0f;
-        if (r <= 1f)
-        {
-            r += Time.deltaTime;
-            gameObject.transform.localScale = Vector3.Lerp(from, to, r);
-            yield return null;
-        }
-       
-        
-    }
-
-
-
-
 }
