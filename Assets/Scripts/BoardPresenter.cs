@@ -8,7 +8,7 @@ public class BoardPresenter
     private readonly BoardModel _boardModel;
     private readonly BoardView _boardView;
 
-    private FigureModel _movingFigure;
+    private FigureModel _lastSelectedFigure;
 
     public BoardPresenter(BoardModel boardModel, BoardView boardView)
     { 
@@ -23,20 +23,20 @@ public class BoardPresenter
 
     private void OnClicked(Vector2Int position)
     {
-        var isNoFigureSelected = _movingFigure == null;
+        var isNoFigureSelected = _lastSelectedFigure == null;
 
         if (isNoFigureSelected)
         {
             var clickedFigure = _boardModel.Board[position.x, position.y];
             if (clickedFigure != null)
             {
-                _movingFigure = _boardModel.Board[position.x, position.y];
+                _lastSelectedFigure = _boardModel.Board[position.x, position.y];
             }
         }
         else
         {
-            _boardModel.TryMoveFigure(_movingFigure.Position, position);
-            _movingFigure = null;
+            _boardModel.TryMoveFigure(_lastSelectedFigure.Position, position);
+            _lastSelectedFigure = null;
         }
     }
 

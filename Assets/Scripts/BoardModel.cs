@@ -50,6 +50,9 @@ public class BoardModel
         {
             if (_board[destination.x, destination.y] == null)
             {
+                _board[destination.x, destination.y] = movingFigure;
+                _board[origin.x, origin.y] = null;
+
                 movingFigure.Position = destination;
             }
         }
