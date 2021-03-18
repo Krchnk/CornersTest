@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoardPresenter 
+public class BoardPresenter
 {
     private readonly BoardModel _boardModel;
     private readonly BoardView _boardView;
@@ -11,11 +11,10 @@ public class BoardPresenter
     private FigureModel _lastSelectedFigure;
 
     public BoardPresenter(BoardModel boardModel, BoardView boardView)
-    { 
+    {
         _boardModel = boardModel;
         _boardView = boardView;
 
-        _boardModel.FigureMoved += MoveFigure;
         _boardView.Clicked += OnClicked;
 
         _boardView.Initialize(_boardModel.BoardSize);
@@ -23,25 +22,39 @@ public class BoardPresenter
 
     private void OnClicked(Vector2Int position)
     {
-        var isNoFigureSelected = _lastSelectedFigure == null;
+        var isNoFigureSelected = LastSelectedFigure == null;
 
         if (isNoFigureSelected)
         {
             var clickedFigure = _boardModel.Board[position.x, position.y];
             if (clickedFigure != null)
             {
-                _lastSelectedFigure = _boardModel.Board[position.x, position.y];
+                LastSelectedFigure = _boardModel.Board[position.x, position.y];
             }
         }
         else
         {
-            _boardModel.TryMoveFigure(_lastSelectedFigure.Position, position);
-            _lastSelectedFigure = null;
+            _boardModel.TryMoveFigure(LastSelectedFigure.Position, position);
+            LastSelectedFigure = null;
         }
     }
 
-    private void MoveFigure()
+    private FigureModel LastSelectedFigure 
     {
-        //_boardView.MoveFigure(_boardModel.PosXHighlight, _boardModel.PosYHighlight,_boardModel.PosXFirst, _boardModel.PosYFirst);
+        get => _lastSelectedFigure;
+        set 
+        {
+            _lastSelectedFigure = value;
+
+            if (value == null)
+            {
+                _boardView.HideCellSelection();
+            }
+            else
+            {
+                _boardView.HighlightCell(value.Position);
+            }
+        }
     }
+
 }

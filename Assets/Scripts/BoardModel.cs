@@ -3,13 +3,9 @@ using System;
 
 public class BoardModel
 {
-    private bool firstClick = true;
     private int _boardSize = 8;
     private FigureFactory _figureFactory;
     private FigureModel[,] _board;
-
-    public event Action BoardGenerated;
-    public event Action FigureMoved;
 
     public BoardModel(int boardSize, FigureFactory figureFactory)
     {
@@ -38,8 +34,6 @@ public class BoardModel
                 _board[i, j] = _figureFactory.Create(new Vector2Int(i, j), Checker.Color.Black);
             }
         }
-
-        BoardGenerated?.Invoke();
     }
 
     public void TryMoveFigure(Vector2Int origin, Vector2Int destination)
