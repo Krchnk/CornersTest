@@ -46,7 +46,7 @@ public class BoardView : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             var cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            var roundedPosition = new Vector2Int((int)cursorPosition.x, (int) cursorPosition.y);
+            var roundedPosition = new Vector2Int(Mathf.RoundToInt(cursorPosition.x), Mathf.RoundToInt(cursorPosition.y));
 
             if (roundedPosition.x >= 0 && roundedPosition.x < 8 &&
                 roundedPosition.y >= 0 && roundedPosition.y < 8)
