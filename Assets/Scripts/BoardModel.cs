@@ -3,7 +3,7 @@ using System;
 
 public class BoardModel
 {
-    private int _boardSize = 8;
+    private int _boardSize ;
     private FigureFactory _figureFactory;
     private FigureModel[,] _board;
 
@@ -23,7 +23,7 @@ public class BoardModel
         {
             for (int j = 5; j < _boardSize; j++)
             {
-                _board[i, j] = _figureFactory.Create(new Vector2Int(i, j), Checker.Color.White);
+                _board[i, j] = _figureFactory.Create(new Vector2Int(i, j), Checker.Color.Black);
             }
         }
 
@@ -31,7 +31,7 @@ public class BoardModel
         {
             for (int j = 0; j < 3; j++)
             {
-                _board[i, j] = _figureFactory.Create(new Vector2Int(i, j), Checker.Color.Black);
+                _board[i, j] = _figureFactory.Create(new Vector2Int(i, j), Checker.Color.White);
             }
         }
     }
@@ -44,11 +44,11 @@ public class BoardModel
         {
             if (_board[destination.x, destination.y] == null)
             {
-                _board[destination.x, destination.y] = movingFigure;
-                _board[origin.x, origin.y] = null;
+                    _board[destination.x, destination.y] = movingFigure;
+                    _board[origin.x, origin.y] = null;
 
-                movingFigure.Position = destination;
-            }
+                    movingFigure.Position = destination;
+            }    
         }
     }
 }

@@ -7,10 +7,15 @@ using System;
 public class BoardView : MonoBehaviour
 {
     [SerializeField] private GameObject _highlightSquare;
+    [SerializeField] private GameObject _moveOptionHighlightSquare;
     [SerializeField] private GameObject _whiteSquare;
     [SerializeField] private GameObject _backgorund;
 
     private GameObject _selection;
+    private GameObject _upMoveOption;
+    private GameObject _downMoveOption;
+    private GameObject _leftMoveOption;
+    private GameObject _rightMoveOption;
 
     public event Action<Vector2Int> Clicked;
 
@@ -41,6 +46,15 @@ public class BoardView : MonoBehaviour
 
         _selection = Instantiate(_highlightSquare);
         _selection.SetActive(false);
+        _upMoveOption = Instantiate(_moveOptionHighlightSquare);
+        _upMoveOption.SetActive(false);
+        _downMoveOption = Instantiate(_moveOptionHighlightSquare);
+        _downMoveOption.SetActive(false);
+        _leftMoveOption = Instantiate(_moveOptionHighlightSquare);
+        _leftMoveOption.SetActive(false);
+        _rightMoveOption = Instantiate(_moveOptionHighlightSquare);
+        _rightMoveOption.SetActive(false);
+        
     }
 
     public void HighlightCell(Vector2Int position)
@@ -49,9 +63,37 @@ public class BoardView : MonoBehaviour
         _selection.transform.position = new Vector3(position.x, position.y, 0f);
     }
 
+    public void HighlightUpMoveCell(Vector2Int position)
+    {
+        _upMoveOption.SetActive(true);
+        _upMoveOption.transform.position = new Vector3(position.x, position.y, 0f);
+    }
+
+    public void HighlightDownMoveCell(Vector2Int position)
+    {
+        _downMoveOption.SetActive(true);
+        _downMoveOption.transform.position = new Vector3(position.x, position.y, 0f);
+    }
+
+    public void HighlightLeftMoveCell(Vector2Int position)
+    {
+        _leftMoveOption.SetActive(true);
+        _leftMoveOption.transform.position = new Vector3(position.x, position.y, 0f);
+    }
+
+    public void HighlightRightMoveCell(Vector2Int position)
+    {
+        _rightMoveOption.SetActive(true);
+        _rightMoveOption.transform.position = new Vector3(position.x, position.y, 0f);
+    }
+
     public void HideCellSelection()
     {
         _selection.SetActive(false);
+        _upMoveOption.SetActive(false);
+        _downMoveOption.SetActive(false);
+        _leftMoveOption.SetActive(false);
+        _rightMoveOption.SetActive(false);
     }
 
     void Update()

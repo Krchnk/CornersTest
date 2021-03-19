@@ -8,9 +8,9 @@ public class Starter : MonoBehaviour
     [SerializeField] GameObject _blackFigure;
     [SerializeField] GameObject _whiteFigure;
 
-    #region Configuration
-    [SerializeField] private int _boardSize;
-    #endregion
+   
+     private int _boardSize=8;
+   
 
     void Start()
     {

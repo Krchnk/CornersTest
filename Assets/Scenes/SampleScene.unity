@@ -236,6 +236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _highlightSquare: {fileID: 7882747356774239968, guid: 0a9977d479128a94f97c8a0b1f155a31, type: 3}
+  _moveOptionHighlightSquare: {fileID: 7882747356774239968, guid: 5473b804e973e074b96dd8731c1bb491, type: 3}
   _whiteSquare: {fileID: 7882747356774239968, guid: 8e8071984bbb3654fb2f95a569cfb27e, type: 3}
   _backgorund: {fileID: 6519639493158359297, guid: a7ee28dd9f271be4ab4e5e8fc07034ac, type: 3}
 --- !u!4 &949472307
@@ -284,7 +285,6 @@ MonoBehaviour:
   _boardView: {fileID: 949472306}
   _blackFigure: {fileID: 3856968151941906625, guid: 4a2f313b1e6dd4143adca41608bed53e, type: 3}
   _whiteFigure: {fileID: 247384132924174074, guid: 04bf07f1754a5234db10c694f510b97d, type: 3}
-  _boardSize: 8
 --- !u!4 &1130295578
 Transform:
   m_ObjectHideFlags: 0
