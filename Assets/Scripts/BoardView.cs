@@ -1,26 +1,30 @@
-using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
 using System;
 
 
 public class BoardView : MonoBehaviour
 {
+    [SerializeField] private GameObject _selectionSquare;
     [SerializeField] private GameObject _highlightSquare;
-    [SerializeField] private GameObject _moveOptionHighlightSquare;
     [SerializeField] private GameObject _whiteSquare;
     [SerializeField] private GameObject _backgorund;
+    [SerializeField] private Transform _highlightsRoot;
+    [SerializeField] private Canvas _canvas;
 
-    private GameObject _selection;
-    private GameObject _upMoveOption;
-    private GameObject _downMoveOption;
-    private GameObject _leftMoveOption;
-    private GameObject _rightMoveOption;
+   private GameObject _selection;
+    private int _size;
 
     public event Action<Vector2Int> Clicked;
+    public event Action DiagonalRulesSet;
+    public event Action HorisontalAndVerticalRoolSet;
+    public event Action NoWideMoveRoolSet;
+    public event Action StartGame;
+
 
     public void Initialize(int size)
     {
+        _size = size;
+
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
@@ -44,56 +48,51 @@ public class BoardView : MonoBehaviour
 
         Instantiate(_backgorund, new Vector3(3.5f, 3.5f, 0f), Quaternion.identity);
 
-        _selection = Instantiate(_highlightSquare);
+        _selection = Instantiate(_selectionSquare);
         _selection.SetActive(false);
-        _upMoveOption = Instantiate(_moveOptionHighlightSquare);
-        _upMoveOption.SetActive(false);
-        _downMoveOption = Instantiate(_moveOptionHighlightSquare);
-        _downMoveOption.SetActive(false);
-        _leftMoveOption = Instantiate(_moveOptionHighlightSquare);
-        _leftMoveOption.SetActive(false);
-        _rightMoveOption = Instantiate(_moveOptionHighlightSquare);
-        _rightMoveOption.SetActive(false);
-        
     }
 
-    public void HighlightCell(Vector2Int position)
+    public void SetDiagonalRules()
+    {
+        DiagonalRulesSet?.Invoke();
+        StartGame?.Invoke();
+        _canvas.enabled = false;
+    }
+    public void SetHorisontalAndVerticalRool()
+    {
+        HorisontalAndVerticalRoolSet?.Invoke();
+        StartGame?.Invoke();
+        _canvas.enabled = false;
+    }
+    public void SetNoWideMoveRool()
+    {
+        NoWideMoveRoolSet?.Invoke();
+        StartGame?.Invoke();
+        _canvas.enabled = false;
+    }
+
+    public void DisplayCellSelection(Vector2Int position)
     {
         _selection.SetActive(true);
         _selection.transform.position = new Vector3(position.x, position.y, 0f);
     }
 
-    public void HighlightUpMoveCell(Vector2Int position)
-    {
-        _upMoveOption.SetActive(true);
-        _upMoveOption.transform.position = new Vector3(position.x, position.y, 0f);
-    }
-
-    public void HighlightDownMoveCell(Vector2Int position)
-    {
-        _downMoveOption.SetActive(true);
-        _downMoveOption.transform.position = new Vector3(position.x, position.y, 0f);
-    }
-
-    public void HighlightLeftMoveCell(Vector2Int position)
-    {
-        _leftMoveOption.SetActive(true);
-        _leftMoveOption.transform.position = new Vector3(position.x, position.y, 0f);
-    }
-
-    public void HighlightRightMoveCell(Vector2Int position)
-    {
-        _rightMoveOption.SetActive(true);
-        _rightMoveOption.transform.position = new Vector3(position.x, position.y, 0f);
-    }
-
     public void HideCellSelection()
     {
         _selection.SetActive(false);
-        _upMoveOption.SetActive(false);
-        _downMoveOption.SetActive(false);
-        _leftMoveOption.SetActive(false);
-        _rightMoveOption.SetActive(false);
+    }
+
+    public void DisplayAvailableMove(Vector2Int position)
+    {
+        Instantiate(_highlightSquare, _highlightsRoot).transform.position = new Vector3(position.x, position.y, 0f);
+    }
+
+    public void ClearAvailableMoves()
+    {
+        foreach (Transform child in _highlightsRoot)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     void Update()
@@ -103,8 +102,8 @@ public class BoardView : MonoBehaviour
             var cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var roundedPosition = new Vector2Int(Mathf.RoundToInt(cursorPosition.x), Mathf.RoundToInt(cursorPosition.y));
 
-            if (roundedPosition.x >= 0 && roundedPosition.x < 8 &&
-                roundedPosition.y >= 0 && roundedPosition.y < 8)
+            if (roundedPosition.x >= 0 && roundedPosition.x < _size &&
+                roundedPosition.y >= 0 && roundedPosition.y < _size)
             {
                 Clicked?.Invoke(roundedPosition);
             }

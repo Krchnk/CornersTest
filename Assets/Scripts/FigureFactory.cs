@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class FigureFactory
 {
@@ -17,6 +16,7 @@ public class FigureFactory
         var figure = color == Checker.Color.White ? _whiteFigure : _blackFigure;
         var figureView = UnityEngine.Object.Instantiate(figure, new Vector3(position.x, position.y, 0f), Quaternion.identity).GetComponent<FigureView>();
         var figureModel = new FigureModel(color, position);
+        figureModel.Orientation = color == Checker.Color.White ? Vector2Int.down : Vector2Int.up;
         var figurePresenter = new FigurePresenter(figureModel, figureView);
         return figureModel;
     }

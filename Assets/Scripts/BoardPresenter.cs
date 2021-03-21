@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BoardPresenter
@@ -10,15 +7,52 @@ public class BoardPresenter
 
     private FigureModel _lastSelectedFigure;
 
+    private bool _switcher = true;
+
     public BoardPresenter(BoardModel boardModel, BoardView boardView)
     {
         _boardModel = boardModel;
         _boardView = boardView;
 
         _boardView.Clicked += OnClicked;
-
+        _boardView.DiagonalRulesSet += OnDiagonalRulesSet;
+        _boardView.HorisontalAndVerticalRoolSet += OnHorisontalAndVerticalRool;
+        _boardView.NoWideMoveRoolSet += OnNoWideMoveRool;
         _boardView.Initialize(_boardModel.BoardSize);
     }
+
+    private void OnNoWideMoveRool()
+    {
+        _boardModel.HorisontalAndVerticalRool = false;
+        _boardModel.DiagonalRool = false;
+    }
+
+    private void OnHorisontalAndVerticalRool()
+    {
+        _boardModel.HorisontalAndVerticalRool = true;
+    }
+
+    private void OnDiagonalRulesSet()
+    {
+        _boardModel.DiagonalRool = true;
+    }
+
+    private void ChangePlayer()
+    {
+        _switcher = !_switcher;
+
+        var col = LastSelectedFigure.Color;
+        foreach (var item in _boardModel.Board)
+        {
+            if (item != null)
+            {
+                if (item.Color != col)
+                    item.HighlightColor = new Color(1f, 0.8f, 0.8f, 1f);
+            }
+
+        }
+    }
+
 
     private void OnClicked(Vector2Int position)
     {
@@ -30,83 +64,36 @@ public class BoardPresenter
 
             if (clickedFigure != null)
             {
-                LastSelectedFigure = _boardModel.Board[position.x, position.y];
-                /*
-                #region HighLightMove  
-                if (position.y < 7)
+                var _figureColorWhite = clickedFigure.Color == Checker.Color.White;
+                var _figureColorBlack = clickedFigure.Color == Checker.Color.Black;
+                var _playerSelector = _switcher ? _figureColorWhite : _figureColorBlack;
+
+                if (_playerSelector)
                 {
-                    if (_boardModel.Board[position.x, position.y + 1] == null)
+                    if (clickedFigure != null)
                     {
-                        var pos = new Vector2Int(position.x, position.y + 1);
-                        _boardView.HighlightUpMoveCell(pos);
+                        LastSelectedFigure = _boardModel.Board[position.x, position.y];
+
+                        foreach (var item in _boardModel.Board)
+                        {
+                            if (item != null)
+                            {
+                                item.HighlightColor = Color.white;
+                            }
+                        }
                     }
                 }
-                if (position.y > 0)
-                {
-                    if (_boardModel.Board[position.x, position.y - 1] == null)
-                    {
-                        var pos = new Vector2Int(position.x, position.y - 1);
-                        _boardView.HighlightDownMoveCell(pos);
-                    }
-                }
-                if (position.x > 0)
-                {
-                    if (_boardModel.Board[position.x - 1, position.y] == null)
-                    {
-                        var pos = new Vector2Int(position.x - 1, position.y);
-                        _boardView.HighlightLeftMoveCell(pos);
-                    }
-                }
-                if (position.x < 7)
-                {
-                    if (_boardModel.Board[position.x + 1, position.y] == null)
-                    {
-                        var pos = new Vector2Int(position.x + 1, position.y);
-                        _boardView.HighlightRightMoveCell(pos);
-                    }
-                }
-                #endregion
-                */
             }
         }
         else
         {
+            var resMove = _boardModel.TryMoveFigure(LastSelectedFigure.Position, position);
 
-            //фишка не может перепрыгивать, а делает только один шаг в любом направлении.
-            if (((LastSelectedFigure.Position.y + 1 == position.y||LastSelectedFigure.Position.y - 1 == position.y) 
-                && LastSelectedFigure.Position.x == position.x)
-                ||
-                ((LastSelectedFigure.Position.x + 1 == position.x || LastSelectedFigure.Position.x - 1 == position.x)
-                && LastSelectedFigure.Position.y == position.y))
-                
+            if (resMove)
             {
-                _boardModel.TryMoveFigure(LastSelectedFigure.Position, position);
-            }
-            //фишка перепрыгивает по вертикали и горизонтали.
-            if(
-               ( LastSelectedFigure.Position.y + 2 == position.y&&
-                _boardModel.Board[LastSelectedFigure.Position.x, LastSelectedFigure.Position.y+ 1]!=null)||
-                (LastSelectedFigure.Position.y - 2 == position.y &&
-                _boardModel.Board[LastSelectedFigure.Position.x, LastSelectedFigure.Position.y - 1] != null)||
-                (LastSelectedFigure.Position.x + 2 == position.x &&
-                _boardModel.Board[LastSelectedFigure.Position.x+1, LastSelectedFigure.Position.y] != null) ||
-                (LastSelectedFigure.Position.x - 2 == position.x &&
-                _boardModel.Board[LastSelectedFigure.Position.x - 1, LastSelectedFigure.Position.y] != null)
-                )
-            {
-                _boardModel.TryMoveFigure(LastSelectedFigure.Position, position);
-            }
-            //фишка может перепрыгивать через другую как в шашках, по диагонали.
-            if (
-               (LastSelectedFigure.Position.y + 2 == position.y && LastSelectedFigure.Position.x + 2 == position.x&&
-                 _boardModel.Board[LastSelectedFigure.Position.x+1, LastSelectedFigure.Position.y + 1] != null)||
-               (LastSelectedFigure.Position.y + 2 == position.y && LastSelectedFigure.Position.x - 2 == position.x &&
-                 _boardModel.Board[LastSelectedFigure.Position.x - 1, LastSelectedFigure.Position.y + 1] != null) 
-               )
-            {
-                _boardModel.TryMoveFigure(LastSelectedFigure.Position, position);
-            }
+                ChangePlayer();
 
+            }
 
 
             LastSelectedFigure = null;
@@ -123,10 +110,15 @@ public class BoardPresenter
             if (value == null)
             {
                 _boardView.HideCellSelection();
+                _boardView.ClearAvailableMoves();
             }
             else
             {
-                _boardView.HighlightCell(value.Position);
+                foreach (var move in _boardModel.GetAvailableMoves(value))
+                {
+                    _boardView.DisplayAvailableMove(move);
+                }
+                _boardView.DisplayCellSelection(value.Position);
             }
         }
     }

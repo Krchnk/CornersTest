@@ -1,30 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 
 public class FigureModel
 {
     private Checker.Color _color;
-    private Vector2Int position;
+    private Vector2Int _position;
+    private Color _highlightColor;
+
+    public Vector2Int Orientation { get; set; }
 
     public FigureModel(Checker.Color color, Vector2Int position)
     {
         _color = color;
-        this.position = position;
+        this._position = position;
     }
 
     public event Action<Vector2Int> Moved;
+    public event Action<Color> ChangedHighlightColor;
+
     public Checker.Color Color => _color;
 
     public Vector2Int Position 
     {
-        get => position; 
+        get => _position; 
         set
         {
-            position = value;
-            Moved(position);
+            _position = value;
+            Moved(_position);
         } 
     }
 
+    public Color HighlightColor
+    {
+        get => _highlightColor;
+        set
+        {
+            _highlightColor = value;
+            ChangedHighlightColor?.Invoke(_highlightColor);
+        }
+    }
 }

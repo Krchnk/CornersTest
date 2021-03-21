@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class FigurePresenter
 {
@@ -15,7 +10,13 @@ public class FigurePresenter
         _figureModel = figureModel;
         _figureView = figureView;
 
-        _figureModel.Moved += OnMoved;   
+        _figureModel.Moved += OnMoved;
+        _figureModel.ChangedHighlightColor += OnChangedHighlightColor;
+    }
+
+    private void OnChangedHighlightColor(Color color)
+    {
+        _figureView.ChangeHighlightColor(color);
     }
 
     private void OnMoved(Vector2Int position)
