@@ -11,15 +11,12 @@ public class Starter : MonoBehaviour
 
     void Start()
     {
-        _boardView.StartGame += OnStart;
+       
         var figureFactory = new FigureFactory(_whiteFigure, _blackFigure);
         var boardModel = new BoardModel(_boardSize, figureFactory);
         var boardPresenter = new BoardPresenter(boardModel, _boardView);
         boardModel.GenerateBoard();
     }
 
-    private void OnStart()
-    {
-       //
-    }
+   
 }

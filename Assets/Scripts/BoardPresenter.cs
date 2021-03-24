@@ -92,6 +92,25 @@ public class BoardPresenter
             if (resMove)
             {
                 ChangePlayer();
+                if (_boardModel.CheckVictoryWhite() == true)
+                {
+                    _boardView.startGame = false;
+                    Debug.Log("WhiteVictory");
+                    _boardView._canvas.enabled = true;
+                    _boardView.whiteWin.SetActive(true);
+                    
+                }
+                   
+
+                if (_boardModel.CheckVictoryBlack() == true)
+                {
+                    _boardView.startGame = false;
+                    Debug.Log("BlackVictory");
+                    _boardView._canvas.enabled = true;
+                    _boardView.blackWin.SetActive(true);
+                    
+                }
+                   
 
             }
 

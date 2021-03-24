@@ -41,6 +41,51 @@ public class BoardModel
         }
     }
 
+    public bool CheckVictoryWhite()
+    {  
+        var figuresLineWidth = 3;
+        for (int i = 0; i < figuresLineWidth; i++)
+        {
+            for (int j = _boardSize - figuresLineWidth; j < _boardSize; j++)
+            {
+                if (_board[i, j] == null)
+                {
+                    return false;
+                }
+                if (_board[i, j] != null)
+                {
+                    if (_board[i, j] == null || _board[i, j].Color == Checker.Color.Black)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    public bool CheckVictoryBlack()
+    {
+        var figuresLineWidth = 3;
+        for (int i = _boardSize - figuresLineWidth; i < _boardSize; i++)
+        {
+            for (int j = 0; j < figuresLineWidth; j++)
+            {
+                if (_board[i, j] == null)
+                {
+                    return false;
+                }
+                if (_board[i, j] != null)
+                {
+                    if (_board[i, j] == null || _board[i, j].Color == Checker.Color.White)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     public bool TryMoveFigure(Vector2Int origin, Vector2Int destination)
     {
         var movingFigure = _board[origin.x, origin.y];

@@ -9,16 +9,18 @@ public class BoardView : MonoBehaviour
     [SerializeField] private GameObject _whiteSquare;
     [SerializeField] private GameObject _backgorund;
     [SerializeField] private Transform _highlightsRoot;
-    [SerializeField] private Canvas _canvas;
+    public Canvas _canvas;
+    public GameObject whiteWin;
+    public GameObject blackWin;
 
-   private GameObject _selection;
+    private GameObject _selection;
     private int _size;
+    public bool startGame = false;
 
     public event Action<Vector2Int> Clicked;
     public event Action DiagonalRulesSet;
     public event Action HorisontalAndVerticalRoolSet;
     public event Action NoWideMoveRoolSet;
-    public event Action StartGame;
 
 
     public void Initialize(int size)
@@ -55,20 +57,25 @@ public class BoardView : MonoBehaviour
     public void SetDiagonalRules()
     {
         DiagonalRulesSet?.Invoke();
-        StartGame?.Invoke();
         _canvas.enabled = false;
+        startGame = true;
     }
     public void SetHorisontalAndVerticalRool()
     {
         HorisontalAndVerticalRoolSet?.Invoke();
-        StartGame?.Invoke();
         _canvas.enabled = false;
+        startGame = true;
     }
     public void SetNoWideMoveRool()
     {
         NoWideMoveRoolSet?.Invoke();
-        StartGame?.Invoke();
         _canvas.enabled = false;
+        startGame = true;
+    }
+
+    public void Reset()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("SampleScene");
     }
 
     public void DisplayCellSelection(Vector2Int position)
@@ -97,7 +104,7 @@ public class BoardView : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)&& startGame==true)
         {
             var cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var roundedPosition = new Vector2Int(Mathf.RoundToInt(cursorPosition.x), Mathf.RoundToInt(cursorPosition.y));
